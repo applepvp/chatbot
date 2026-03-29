@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur d'Assistant IA local</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 flex items-center justify-center min-h-screen font-sans text-gray-800">
+
+    <div class="bg-white p-10 rounded-2xl shadow-xl border border-gray-100 max-w-lg w-full">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-extrabold text-gray-900 mb-2">Créez votre IA en 10 secondes</h1>
+            <p class="text-gray-500">Générez un chatbot sur-mesure pour votre activité et testez-le gratuitement tout de suite.</p>
+        </div>
+        
+        <form id="publicForm" class="space-y-5">
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Nom de votre entreprise</label>
+                <input type="text" id="pubName" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Ex: Restaurant Le Bistrot" required>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Activité & Description</label>
+                <textarea id="pubDesc" rows="2" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Décrivez rapidement ce que vous faites..." required></textarea>
+            </div>
+
+            <div class="border-t pt-4">
+                <div class="flex justify-between items-center mb-3">
+                    <label class="block text-sm font-bold text-gray-700">FAQ (Foire Aux Questions)</label>
+                    <button type="button" onclick="addFaq()" class="text-blue-600 text-xs font-bold hover:underline">+ Ajouter une question</button>
+                </div>
+                <div id="pubFaqContainer" class="space-y-3">
+                    <!-- Dynamic FAQ items -->
+                </div>
+            </div>
+
+            <button type="submit" id="submitBtn" class="w-full py-4 mt-6 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-lg shadow-blue-500/30 text-lg">
+                Tester mon Assistant 🚀
+            </button>
+        </form>
+    </div>
+
+    <script>
+        let faqCount = 0;
+
+        function addFaq() {
+            const id = faqCount++;
+            const container = document.getElementById('pubFaqContainer');
+            const div = document.createElement('div');
+            div.className = "p-3 bg-gray-50 rounded-lg border border-gray-200 relative group";
+            div.id = `faq-${id}`;
+            div.innerHTML = `
+                <input type="text" class="pub-faq-q w-full px-3 py-2 border border-gray-300 rounded text-sm mb-2 focus:ring-1 focus:ring-blue-500 outline-none" placeholder="Question (ex: Quel est votre plat signature ?)">
+                <input type="text" class="pub-faq-a w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-500 outline-none" placeholder="Réponse (ex: Notre célèbre burger maison.)">
+                <button type="button" onclick="document.getElementById('faq-${id}').remove()" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] shadow hover:bg-red-600 opacity-0 group-hover:opacity-100 transition">✕</button>
+            `;
+            container.appendChild(div);
+        }
+
+        // Add first FAQ by default
+        addFaq();
+
+        document.getElementById('publicForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submitBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'Génération en cours... <span class="animate-pulse">⏳</span>';
+            btn.disabled = true;
+
+            const tempId = 'lead-' + Math.random().toString(36).substr(2, 9);
+            
+            const faqs = [];
+            document.querySelectorAll('#pubFaqContainer > div').forEach(div => {
+                const q = div.querySelector('.pub-faq-q').value.trim();
+                const a = div.querySelector('.pub-faq-a').value.trim();
+                if (q && a) faqs.push({question: q, answer: a});
+            });
+
+            const payload = {
+                client_id: tempId,
+                is_temp: 1, 
+                name: document.getElementById('pubName').value,
+                description: document.getElementById('pubDesc').value,
+                hours: "",
+                address: "",
+                faq: faqs
+            };
+
+            try {
+                await fetch('/api/save-prompt', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload)
+                });
+                
+                window.location.href = '/demo?id=' + tempId;
+            } catch (err) {
+                alert("Erreur serveur.");
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

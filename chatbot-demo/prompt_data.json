@@ -1,0 +1,16 @@
+{
+    "name": "Le Petit Bouchon",
+    "hours": "Mar-Sam 12h-14h30 et 19h-22h30, fermé Dim-Lun",
+    "address": "12 Rue de la Paix, 64000 Pau",
+    "description": "Restaurant traditionnel français au cœur de Pau. Spécialités : confit de canard, magret, foie gras. Menu du jour à 14€. Réservation recommandée le week-end.",
+    "faq": [
+        {
+            "question": "Acceptez-vous les réservations ?",
+            "answer": "Oui, par téléphone au 05 59 00 00 00 ou en ligne"
+        },
+        {
+            "question": "Avez-vous des options végétariennes ?",
+            "answer": "Oui, 2 plats végétariens au menu chaque jour"
+        }
+    ]
+}

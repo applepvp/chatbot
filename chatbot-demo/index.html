@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration du Chatbot Local</title>
+    <!-- Use Tailwind CSS via CDN for rapid clean styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sidebar: '#1e293b',
+                        primary: '#3b82f6',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 h-screen flex overflow-hidden">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-sidebar text-white flex flex-col h-full shadow-lg">
+        <div class="p-6">
+            <h1 class="text-2xl font-bold tracking-tight">Chatbot Admin</h1>
+            <p class="text-sm text-gray-400 mt-2">Démonstration Locale</p>
+        </div>
+        <nav class="flex-1 px-4 mt-6">
+            <a href="/" class="block px-4 py-2 mt-2 text-sm font-semibold rounded-lg bg-gray-800 text-white hover:bg-gray-700">Configuration</a>
+            <a href="/demo" target="_blank" class="block px-4 py-2 mt-2 text-sm font-semibold rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white flex justify-between items-center">
+                <span>Voir la Démonstration</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+            </a>
+        </nav>
+        <div class="p-4 border-t border-gray-700">
+            <p class="text-xs text-gray-400">&copy; 2026 Votre Agence</p>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto p-8">
+        <div class="max-w-3xl mx-auto bg-white p-8 mb-8 rounded-xl shadow-sm border border-gray-100">
+            <h2 class="text-2xl font-bold mb-6 text-gray-900 border-b pb-4">Contexte de l'Entreprise</h2>
+            
+            <form id="configForm" class="space-y-6">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nom de l'entreprise</label>
+                        <input type="text" id="businessName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition" placeholder="Ex: Le Petit Bouchon" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Horaires d'ouverture</label>
+                        <input type="text" id="businessHours" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition" placeholder="Ex: Mar-Dim 12h-14h30, 19h-22h30" required>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Adresse postale</label>
+                    <input type="text" id="businessAddress" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition" placeholder="Ex: 15 Rue de la République, 69002 Lyon" required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Description et Services</label>
+                    <textarea id="businessDescription" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition" placeholder="Décrivez l'activité, les spécialités, les services..." required></textarea>
+                </div>
+
+                <div class="border-t pt-6 mt-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <label class="block text-lg font-bold text-gray-900">FAQ (Foire Aux Questions)</label>
+                        <button type="button" onclick="addFaq()" class="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition">+ Ajouter une question</button>
+                    </div>
+                    
+                    <div id="faqContainer" class="space-y-4">
+                        <!-- FAQ Items will be injected here -->
+                    </div>
+                </div>
+
+                <div class="pt-6 border-t flex items-center justify-between">
+                    <span id="saveStatus" class="text-sm font-medium text-green-600 hidden">✓ Configuration enregistrée avec succès.</span>
+                    <button type="submit" class="ml-auto px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-blue-600 shadow-lg shadow-blue-500/30 transition transform hover:-translate-y-0.5 active:translate-y-0">
+                        Sauvegarder et Générer
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="max-w-3xl mx-auto bg-blue-50 p-6 rounded-xl border border-blue-100 hidden" id="widgetCodeBox">
+            <h3 class="text-md font-bold text-blue-900 mb-2">Code d'intégration du widget</h3>
+            <p class="text-sm text-blue-800 mb-4">Copiez cette ligne et collez-la juste avant la balise <code>&lt;/body&gt;</code> sur le site web du client.</p>
+            <div class="bg-gray-900 p-4 rounded-lg flex justify-between items-center group relative cursor-pointer" onclick="copyCode()">
+                <code class="text-green-400 text-sm font-mono">&lt;script src="http://localhost:5000/widget.js"&gt;&lt;/script&gt;</code>
+                <span class="text-xs bg-gray-700 text-white px-2 py-1 rounded hidden group-hover:block absolute right-4">Copier</span>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let faqCount = 0;
+
+        function addFaq(question = '', answer = '') {
+            const id = faqCount++;
+            const container = document.getElementById('faqContainer');
+            
+            const div = document.createElement('div');
+            div.className = "flex gap-4 items-start bg-gray-50 p-4 rounded-lg border border-gray-200 fade-in";
+            div.id = `faq-${id}`;
+            div.innerHTML = `
+                <div class="flex-1 space-y-3">
+                    <input type="text" class="faq-q w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-primary focus:border-primary outline-none" placeholder="Question (ex: Acceptez-vous les tickets restaurant ?)" value="${question}">
+                    <input type="text" class="faq-a w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-primary focus:border-primary outline-none" placeholder="Réponse (ex: Oui, nous acceptons tous les titres restaurant.)" value="${answer}">
+                </div>
+                <button type="button" onclick="document.getElementById('faq-${id}').remove()" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                </button>
+            `;
+            container.appendChild(div);
+        }
+
+        async function loadConfig() {
+            try {
+                const res = await fetch('/api/get-config');
+                const data = await res.json();
+                if (data.name) {
+                    document.getElementById('businessName').value = data.name;
+                    document.getElementById('businessHours').value = data.hours || '';
+                    document.getElementById('businessAddress').value = data.address || '';
+                    document.getElementById('businessDescription').value = data.description || '';
+                    
+                    if (data.faq && data.faq.length > 0) {
+                        data.faq.forEach(f => addFaq(f.question, f.answer));
+                    } else {
+                        addFaq(); // Add one default empty if none
+                    }
+                    
+                    // Show widget code automatically if there's saved data
+                    document.getElementById('widgetCodeBox').classList.remove('hidden');
+                } else {
+                    addFaq(); // Add one default empty
+                }
+            } catch (e) {
+                console.error("Failed to load config", e);
+                addFaq();
+            }
+        }
+
+        document.getElementById('configForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const faqs = [];
+            document.querySelectorAll('#faqContainer > div').forEach(div => {
+                const q = div.querySelector('.faq-q').value;
+                const a = div.querySelector('.faq-a').value;
+                if (q && a) faqs.push({question: q, answer: a});
+            });
+
+            const payload = {
+                name: document.getElementById('businessName').value,
+                hours: document.getElementById('businessHours').value,
+                address: document.getElementById('businessAddress').value,
+                description: document.getElementById('businessDescription').value,
+                faq: faqs
+            };
+
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.innerText = "Sauvegarde en cours...";
+            btn.disabled = true;
+
+            try {
+                await fetch('/api/save-prompt', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload)
+                });
+                
+                document.getElementById('saveStatus').classList.remove('hidden');
+                document.getElementById('widgetCodeBox').classList.remove('hidden');
+                setTimeout(() => {
+                    document.getElementById('saveStatus').classList.add('hidden');
+                }, 3000);
+            } catch (error) {
+                alert("Erreur lors de la sauvegarde.");
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        });
+
+        function copyCode() {
+            navigator.clipboard.writeText('<script src="http://localhost:5000/widget.js"><\/script>');
+        }
+
+        // On load
+        loadConfig();
+    </script>
+</body>
+</html>

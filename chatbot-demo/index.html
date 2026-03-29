@@ -94,7 +94,7 @@
             <h3 class="text-md font-bold text-blue-900 mb-2">Code d'intégration du widget</h3>
             <p class="text-sm text-blue-800 mb-4">Copiez cette ligne et collez-la juste avant la balise <code>&lt;/body&gt;</code> sur le site web du client.</p>
             <div class="bg-gray-900 p-4 rounded-lg flex justify-between items-center group relative cursor-pointer" onclick="copyCode()">
-                <code class="text-green-400 text-sm font-mono">&lt;script src="http://localhost:5000/widget.js"&gt;&lt;/script&gt;</code>
+                <code class="text-green-400 text-sm font-mono">&lt;script src="https://chatbot-production-e910.up.railway.app/widget.js"&gt;&lt;/script&gt;</code>
                 <span class="text-xs bg-gray-700 text-white px-2 py-1 rounded hidden group-hover:block absolute right-4">Copier</span>
             </div>
         </div>
@@ -122,31 +122,8 @@
             container.appendChild(div);
         }
 
-        async function loadConfig() {
-            try {
-                const res = await fetch('/api/get-config');
-                const data = await res.json();
-                if (data.name) {
-                    document.getElementById('businessName').value = data.name;
-                    document.getElementById('businessHours').value = data.hours || '';
-                    document.getElementById('businessAddress').value = data.address || '';
-                    document.getElementById('businessDescription').value = data.description || '';
-                    
-                    if (data.faq && data.faq.length > 0) {
-                        data.faq.forEach(f => addFaq(f.question, f.answer));
-                    } else {
-                        addFaq(); // Add one default empty if none
-                    }
-                    
-                    // Show widget code automatically if there's saved data
-                    document.getElementById('widgetCodeBox').classList.remove('hidden');
-                } else {
-                    addFaq(); // Add one default empty
-                }
-            } catch (e) {
-                console.error("Failed to load config", e);
-                addFaq();
-            }
+        function loadConfig() {
+            addFaq();
         }
 
         document.getElementById('configForm').addEventListener('submit', async (e) => {
@@ -193,7 +170,7 @@
         });
 
         function copyCode() {
-            navigator.clipboard.writeText('<script src="http://localhost:5000/widget.js"><\/script>');
+            navigator.clipboard.writeText('<script src="https://chatbot-production-e910.up.railway.app/widget.js"><\/script>');
         }
 
         // On load

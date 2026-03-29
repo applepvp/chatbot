@@ -90,20 +90,7 @@
             </form>
         </div>
         
-        <div class="max-w-3xl mx-auto text-center mb-8 hidden" id="generateCodeContainer">
-            <button type="button" onclick="document.getElementById('widgetCodeBox').classList.remove('hidden'); this.parentElement.classList.add('hidden')" class="px-6 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 shadow-lg transition transform hover:-translate-y-0.5">
-                Générer le code d'intégration
-            </button>
-        </div>
-        
-        <div class="max-w-3xl mx-auto bg-blue-50 p-6 rounded-xl border border-blue-100 hidden" id="widgetCodeBox">
-            <h3 class="text-md font-bold text-blue-900 mb-2">Code d'intégration du widget</h3>
-            <p class="text-sm text-blue-800 mb-4">Copiez cette ligne et collez-la juste avant la balise <code>&lt;/body&gt;</code> sur le site web du client.</p>
-            <div class="bg-gray-900 p-4 rounded-lg flex justify-between items-center group relative cursor-pointer" onclick="copyCode()">
-                <code class="text-green-400 text-sm font-mono">&lt;script src="http://localhost:5000/widget.js"&gt;&lt;/script&gt;</code>
-                <span class="text-xs bg-gray-700 text-white px-2 py-1 rounded hidden group-hover:block absolute right-4">Copier</span>
-            </div>
-        </div>
+
     </main>
 
     <script>
@@ -163,7 +150,6 @@
                 });
                 
                 document.getElementById('saveStatus').classList.remove('hidden');
-                document.getElementById('generateCodeContainer').classList.remove('hidden');
                 setTimeout(() => {
                     document.getElementById('saveStatus').classList.add('hidden');
                 }, 3000);
@@ -175,9 +161,6 @@
             }
         });
 
-        function copyCode() {
-            navigator.clipboard.writeText('<script src="http://localhost:5000/widget.js"><\/script>');
-        }
 
         // On load
         loadConfig();

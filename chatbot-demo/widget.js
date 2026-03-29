@@ -1,4 +1,9 @@
 (function() {
+    const scriptTag = document.currentScript;
+    const scriptSrc = scriptTag ? scriptTag.src : "";
+    const backendOrigin = scriptSrc ? new URL(scriptSrc).origin : 'https://chatbot-production-e910.up.railway.app';
+    const clientId = scriptSrc.includes('?') ? new URLSearchParams(scriptSrc.split('?')[1]).get('id') : new URLSearchParams(window.location.search).get('id');
+
     // Inject CSS
     const style = document.createElement('style');
     style.innerHTML = `
@@ -184,7 +189,7 @@
                 </button>
             </div>
             <div id="chatbot-messages">
-                <div class="chat-bubble chat-bot">Bonjour ! Comment puis-je vous aider aujourd'hui ?</div>
+                <div class="chat-bubble chat-bot" id="initial-welcome">Chargement...</div>
             </div>
             <div id="chatbot-input-area">
                 <input type="text" id="chatbot-input" placeholder="Écrivez votre message..." autocomplete="off">
@@ -270,10 +275,10 @@
         showTyping();
 
         try {
-            const response = await fetch('https://chatbot-production-e910.up.railway.app/chat', {
+            const response = await fetch(backendOrigin + '/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: text, history: history })
+                body: JSON.stringify({ client_id: clientId, message: text, history: history })
             });
             const data = await response.json();
             hideTyping();
@@ -284,7 +289,7 @@
                 history.push({role: 'model', message: data.response});
                 addMessage(data.response, false);
             } else {
-                addMessage("Une erreur s'est produite. Veuillez réessayer.", false);
+                addMessage("Erreur de connexion au serveur (Vérifiez la clé API Gemini sur le serveur).", false);
             }
         } catch (e) {
             hideTyping();
@@ -299,4 +304,19 @@
     inputEl.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') sendMessage();
     });
+
+    // Initialize welcome message
+    (async function() {
+        if (clientId) {
+            try {
+                const res = await fetch(backendOrigin + '/api/get-client-profile?id=' + encodeURIComponent(clientId));
+                const data = await res.json();
+                if (data.welcome) {
+                    document.getElementById('initial-welcome').textContent = data.welcome;
+                    return;
+                }
+            } catch (e) {}
+        }
+        document.getElementById('initial-welcome').textContent = "Bonjour ! Comment puis-je vous aider aujourd'hui ?";
+    })();
 })();

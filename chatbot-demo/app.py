@@ -1,6 +1,6 @@
 import os
 import json
-from flask import Flask, request, jsonify, render_template, send_from_directory
+from flask import Flask, request, jsonify, render_template, send_from_directory, Response
 from flask_cors import CORS
 import requests
 
@@ -29,8 +29,26 @@ def get_system_prompt():
             return prompt
     return "Tu es un assistant IA. Aucune configuration n'a été trouvée, demande au propriétaire de configurer l'interface d'administration."
 
+def check_auth(username, password):
+    return username == 'admin' and password == 'pau2026'
+
+def authenticate():
+    return Response(
+    'Accès refusé. Veuillez vous identifier.', 401,
+    {'WWW-Authenticate': 'Basic realm="Login Required"'})
+
 @app.route("/")
 def admin_page():
+    auth = request.authorization
+    if not auth or not check_auth(auth.username, auth.password):
+        return authenticate()
+        
+    if os.path.exists(PROMPT_FILE):
+        try:
+            os.remove(PROMPT_FILE)
+        except Exception:
+            pass
+            
     return render_template("index.html")
 
 @app.route("/demo")

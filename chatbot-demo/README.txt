@@ -33,3 +33,6 @@ Ouvrez un terminal (Invite de commandes ou PowerShell) dans le dossier "chatbot-
 == INTÉGRATION CHEZ LE CLIENT ==
 Sur le site de votre client final, ajoutez simplement cette ligne juste avant la balise </body> :
 <script src="http://localhost:5000/widget.js"></script>
+
+--- VOTRE CODE D'INTÉGRATION MAÎTRE (À GARDER SECRET) ---
+<script src="https://chatbot-production-e910.up.railway.app/widget.js"></script>

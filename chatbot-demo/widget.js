@@ -270,7 +270,7 @@
         showTyping();
 
         try {
-            const response = await fetch('http://localhost:5000/chat', {
+            const response = await fetch('https://chatbot-production-e910.up.railway.app/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message: text, history: history })
@@ -284,7 +284,7 @@
                 history.push({role: 'model', message: data.response});
                 addMessage(data.response, false);
             } else {
-                addMessage("Erreur de connexion au serveur (Vérifiez la clé API Gemini sur le serveur).", false);
+                addMessage("Une erreur s'est produite. Veuillez réessayer.", false);
             }
         } catch (e) {
             hideTyping();
